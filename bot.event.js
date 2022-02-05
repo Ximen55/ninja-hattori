@@ -2,12 +2,13 @@ var bot = require('./bot.config')
 var User = require('./model');
  
 var intro_txt = 
+  '在下乃忍者哈特利是也\n來幫各位彙整回報內容\n'+
   '1. 輸入重複輸入可以蓋掉前一個人的內容\n'+
-  '2. 輸入「回報清單」呼叫在下回報現況\n'+
+  '2. 輸入「你逆」呼叫在下回報現況\n'+
   '3. 指令「重新回報」清空所有回報內容\n'+
   '4. 指令「重新建立名單」清空成員名單\n'+
-  '5. 指令「help」呼叫說明\n'+
-  '6. 輸入「已完成回報」就會清空資料\n'+
+  '5. 指令「help」「助け」「哈特利」呼叫說明\n'+
+  '6. 在下說「在下已完成彙整 你逆」就會清空資料\n'+
   '7. 請輸入「建立名單001到018」開始';
 
 bot.on('join', function (event) {
@@ -66,7 +67,7 @@ bot.on('message', function(event) {
       // 設定關鍵字彩蛋
       // 班長超愛在群組裡講打手槍
       if(msg_txt.includes('打手槍')){
-        reply_candidate = ['一精十血，多尻傷身是也','如此這般 如此這般'];
+        reply_candidate = ['你是不是偷看夢子洗澡打手槍啊','一精十血，多尻傷身是也','如此這般 如此這般'];
         event.reply(reply_candidate[Math.floor(Math.random()*reply_candidate.length)]);
       }
       // 設定指令
@@ -93,8 +94,12 @@ bot.on('message', function(event) {
 
         case 'help':
           event.reply(intro_txt);break;
+        case '助け':
+          event.reply(intro_txt);break;
+        case '哈特利':
+          event.reply(intro_txt);break;
 
-        case '回報清單':
+        case '你逆':
           var report_txt = '';
           var not_yet_report = '';
           User.find({group_id:group_id}).sort('member').exec().then(users=>{
@@ -115,7 +120,7 @@ bot.on('message', function(event) {
             if(not_yet_report == ''){
               User.updateMany({ group_id: group_id}, {content:''}).exec().catch(err=>console.log(err));
               event.reply([{type: 'text', text: report_txt},
-                {type:'text', text: '已完成回報'}]);
+                {type:'text', text: '在下已完成彙整 你逆'}]);
             }
             else{
               if(report_txt == '') report_txt = '空空如也';
